@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use App\Models\File;
+use Illuminate\Support\Carbon;
+use App\Notifications\TaskDue;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -44,34 +48,42 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //$request->validate([
-            //'name' => 'required',
-            //'description' => 'sometime',
-            //'due_date' => 'required|date',
-            //'status' => 'required|in:Todo,Done',
-            //'file' => 'sometime|file|mimes:pdf,doc,docx|max:1024'
-        //]);
+    // Validate input
+    //$request->validate([
+        //'name' => 'required',
+        //'description' => 'nullable',
+        //'due_date' => 'required|date',
+        //'status' => 'required|in:Todo,Done',
+        //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
+    //]);
 
-        $task = new Task();
-        $task->name = $request->input('name');
-        $task->description = $request->input('description');
-        $task->due_date = $request->input('due_date');
-        $task->status = $request->input('status');
-        $task->user_id = auth()->id();
-        $task->save();
-        
+    $task = new Task();
+    $task->name = $request->input('name');
+    $task->description = $request->input('description');
+    $task->due_date = $request->input('due_date');
+    $task->status = $request->input('status');
+    $task->user_id = auth()->id();
+    $task->save();
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $file->storeAs('files', $file->getClientOriginalName());
-            $task->files()->create([
-                'name' => $file->getClientOriginalName(),
-                'path' => $file->getClientOriginalName(),
-            ]);
-        }
-
-        return redirect()->route('index');
+    // Store file if input is present
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $file->storeAs('file', $file->getClientOriginalName());
+        $task->files()->create([
+            'name' => $file->getClientOriginalName(),
+            'path' => $file->getClientOriginalName(),
+        ]);
     }
+
+    // Send notification if due date is less than two days away
+    //$user = auth()->user();
+    //if ($task->due_date <= Carbon::now()->addDays(2)) {
+        //$user->notify(new TaskDue($task));
+    //}
+
+    return redirect()->route('index');
+    }
+
 
     /**
      * Display the specified task.
@@ -182,6 +194,12 @@ class TaskController extends Controller
             abort(404);
         }
         return Storage::download("tasks/{$file->file_name}");
+    }
+
+    public function sendNotification()
+    {
+        $tasks = Task::dueSoon()->get();
+        Notification::send($tasks->user, new TaskDue());
     }
 }
 

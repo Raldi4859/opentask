@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,16 +11,14 @@ class TaskDue extends Notification
 {
     use Queueable;
 
-    protected $task;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Task $task)
+    public function __construct()
     {
-        $this->task = $task;
+        //
     }
 
     /**
@@ -43,14 +40,9 @@ class TaskDue extends Notification
      */
     public function toMail($notifiable)
     {
-        $task = $this->task;
         return (new MailMessage)
-                    ->subject('Task Due Soon')
-                    ->greeting("Hello!\nA task is due soon.")
-                    ->line("Task: {$task->title}")
-                    ->line("Due date: {$task->due_date->format('m/d/Y')}")
-                    ->action('View Task', route('task.edit', $task))
-                    ->line('Thank you for using our application!')
-                    ->to($notifiable->email);
+                    ->line('You have a task with a due date less than two days.')
+                    ->action('View Task', url('task.edit'))
+                    ->line('Thank you for using our application!');
     }
 }

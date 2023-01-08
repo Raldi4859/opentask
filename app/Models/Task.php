@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,6 +17,11 @@ class Task extends Model
     public function __construct(array $fillable = [])
     {
         parent::__construct($fillable);
+    }
+
+    public function scopeDueSoon($task)
+    {
+        return $task->where('due_date', '<=', Carbon::now()->addDays(2));
     }
 
     public function getName(): string
@@ -66,5 +72,10 @@ class Task extends Model
     public function files(): HasOne
     {
         return $this->hasOne(File::class);
+    }
+
+    public function notifications()
+    {
+    return $this->hasMany('App\Notification');
     }
 }
