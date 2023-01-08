@@ -15,26 +15,30 @@
 
     @foreach ($tasks as $task)
         <div class="card mt-3">
-            <h5 class="card-header">
+            <h4 class="card-header">
                 @if ($task->status === 'Todo')
-                    {{ $task->title }}
-                    <h4 class="card-text">Due Date: {{ $task->due_date }}</h4>
+                    {{ $task->name }}
                 @else
-                    <del>{{ $task->title }}</del>
+                    <del>{{ $task->name }}</del>
                 @endif
 
                 </span>
-            </h5>
+            </h4>
 
             <div class="card-body">
                 <div class="card-text">
                     <div class="float-start">
+                        <h5>
                         @if ($task->status === 'Todo')
                             {{ $task->description }}
-                            {{ $task->due_data }}
+                            <br>
+                            Due Date: {{ $task->due_date }}
+                            <br>
+                            File: {{ $task->file }}
                         @else
                             <del>{{ $task->description }}</del>
                         @endif
+                        </h5>
                         <br>
 
                         @if ($task->status === 'Todo')
@@ -55,7 +59,7 @@
                            <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('task.destroy', $task->id) }}" style="display: inline" method="" onsubmit="return confirm('Are you sure to delete ?')">
+                        <form action="{{ route('task.destroy', $task->id) }}" style="display: inline" method="POST" onsubmit="return confirm('Are you sure to delete ?')">
                             @csrf
                             @method('DELETE')
 

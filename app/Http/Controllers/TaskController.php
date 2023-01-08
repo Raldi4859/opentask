@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -15,8 +16,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::orderBy('id', 'desc')->get();
-        return view('index', compact('tasks'));
+        $tasks = Task::where('user_id', auth()->id())->get();
+        return view('index', ['tasks' => $tasks]);
     }
 
     /**
@@ -27,14 +28,10 @@ class TaskController extends Controller
     public function create()
     {
         $statuses = [
-            [
-                'label' => 'Todo',
-                'value' => 'Todo',
-            ],
-            [
-                'label' => 'Done',
-                'value' => 'Done',
-            ]
+            ['label' => 'Todo',
+             'value' => 'Todo'],
+            ['label' => 'Done',
+            'value' => 'Done']
         ];
         return view('create', compact('statuses'));
     }
@@ -47,31 +44,33 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'due_date' => 'required|date',
-            'status' => 'required|in:pending,completed',
-            'file' => 'required|file|mimes:pdf,doc,docx'
-        ]);
+        //$request->validate([
+            //'name' => 'required',
+            //'description' => 'sometime',
+            //'due_date' => 'required|date',
+            //'status' => 'required|in:Todo,Done',
+            //'file' => 'sometime|file|mimes:pdf,doc,docx|max:1024'
+        //]);
 
         $task = new Task();
-        $task->title = $request->input('title');
+        $task->name = $request->input('name');
         $task->description = $request->input('description');
         $task->due_date = $request->input('due_date');
         $task->status = $request->input('status');
+        $task->user_id = auth()->id();
         $task->save();
+        
 
-        $file = $request->file('file');
-        $fileName = $task->id . '.' . $file->extension();
-        $file->storeAs('tasks', $fileName);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $file->storeAs('files', $file->getClientOriginalName());
+            $task->files()->create([
+                'name' => $file->getClientOriginalName(),
+                'path' => $file->getClientOriginalName(),
+            ]);
+        }
 
-        $taskFile = new File();
-        $taskFile->task_id = $task->id;
-        $taskFile->file_name = $fileName;
-        $taskFile->save();
-
-        return redirect()->route('index')->with('success', 'Task created successfully.');
+        return redirect()->route('index');
     }
 
     /**
@@ -83,6 +82,9 @@ class TaskController extends Controller
     public function show($id)
     {
         //$task = Task::findOrFail($id);
+        //if ($task->user_id !== auth()->id()) {
+            //abort(403, 'Unauthorized action.');
+        //}
         //return view('task.show', ['task' => $task]);
     }
 
@@ -94,10 +96,19 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
+        $statuses = [
+            ['label' => 'Todo',
+             'value' => 'Todo'],
+            ['label' => 'Done',
+            'value' => 'Done']
+        ];
         $task = Task::findOrFail($id);
-        return view('edit', ['task' => $task]);
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        return view('edit', compact('statuses', 'task'));
     }
-    
+
     /**
      * Update the specified task in storage.
      *
@@ -107,16 +118,20 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $task = Task::findOrFail($id);
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
-            'title' => 'required',
+            'name' => 'required',
             'description' => 'required',
             'due_date' => 'required|date',
-            'status' => 'required|in:pending,completed',
+            'status' => 'required|in:Todo,Done',
             'file' => 'nullable|file|mimes:pdf,doc,docx'
         ]);
 
-        $task = Task::findOrFail($id);
-        $task->title = $request->input('title');
+        $task->name = $request->input('name');
         $task->description = $request->input('description');
         $task->due_date = $request->input('due_date');
         $task->status = $request->input('status');
@@ -124,19 +139,14 @@ class TaskController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $fileName = $task->id . '.' . $file->extension();
-            $file->storeAs('tasks', $fileName);
+            $file->storeAs('files', $file->getClientOriginalName());
+            $task->file()->create([
+                'name' => $file->getClientOriginalName(),
+                'path' => $file->getClientOriginalName(),
+            ]);
+        }
 
-            $taskFile = $task->file;
-            if (!$taskFile) {
-                $taskFile = new File();
-                $taskFile->task_id = $task->id;
-            }
-            $taskFile->file_name = $fileName;
-            $taskFile->save();
-        }    
-
-        return redirect()->route('Index')->with('success', 'Task updated successfully.');
+        return redirect()->route('index');
     }
 
     /**
@@ -148,25 +158,30 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $task->delete();
-        return redirect()->route('index')->with('success', 'Task deleted successfully.');
+        return redirect()->route('index');
     }
 
-     /**
-      * Download the specified task file.
-      *
-      * @param  int  $id
-      * @return \Illuminate\Http\Response
-      */
+    /**
+     * Download the specified task file.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function download($id)
     {
         $task = Task::findOrFail($id);
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $file = $task->file;
         if (!$file) {
-            return redirect()->route('index')->with('error', 'File not found.');
+            abort(404);
         }
-        return response()->download(storage_path('app/tasks/' . $file->file_name));
+        return Storage::download("tasks/{$file->file_name}");
     }
-
 }
-    
+

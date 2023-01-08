@@ -20,12 +20,20 @@
 
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ $task->title }}">
+                <input type="text" class="form-control" id="name" name="name" value="{{ $task->name }}">
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea type="text" class="form-control" id="description" name="description" rows="5">{{ $task->description }}</textarea>
             </div>
+            <div class="mb-3">
+                <label for="due_date">Due Date:</label>
+                <input type="date" class="form-control" id="due_date" name="due_date" value="{{ $task->due_date }}">
+            </div>
+            <div class="mb-3">
+                <label for="file">Upload File:</label>
+                <input type="file" class="form-control-file" id="file" name="file">{{ $task->file }}
+            <div class="mb-3">
             <div class="mb-3">
                 <label for="description" class="form-label">Status</label>
                 <select name="status" id="status" class="form-control">

@@ -10,17 +10,12 @@ class Task extends Model
 {
     protected $table = 'tasks';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'description', 'file_id', 'due_date', 'status'];
+    protected $fillable = ['name', 'description', 'due_date', 'status'];
     protected $guarded = [];
 
     public function __construct(array $fillable = [])
     {
         parent::__construct($fillable);
-    }
-
-    public function file()
-    {
-        return $this->belongsTo(File::class);
     }
 
     public function getName(): string
@@ -41,16 +36,6 @@ class Task extends Model
     public function setDescription(string $description): void
     {
         $this->description = $description;
-    }
-
-    public function getFileId(): int
-    {
-        return $this->file_id;
-    }
-
-    public function setFileId(int $file_id): void
-    {
-        $this->file_id = $file_id;
     }
 
     public function getDueDate(): string

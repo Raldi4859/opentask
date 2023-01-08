@@ -49,7 +49,8 @@ class TaskDue extends Notification
                     ->greeting("Hello!\nA task is due soon.")
                     ->line("Task: {$task->title}")
                     ->line("Due date: {$task->due_date->format('m/d/Y')}")
-                    ->action('View Task', route('tasks.show', $task))
-                    ->line('Thank you for using our application!');
+                    ->action('View Task', route('task.edit', $task))
+                    ->line('Thank you for using our application!')
+                    ->to($notifiable->email);
     }
 }

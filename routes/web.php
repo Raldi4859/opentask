@@ -29,6 +29,7 @@ Route::get('actionlogout', [LoginController::class, 'actionlogout'])->name('acti
 // Task routes
 Route::get('home', [TaskController::class, 'index'])->name('index');
 Route::resource('task', TaskController::class);
+Route::post('addTask',[TaskController::class, 'store'])->name('addTask');
 Route::get('tasks/{id}/download', 'TaskController@download')->name('tasks.download');
 
 

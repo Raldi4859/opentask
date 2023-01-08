@@ -22,7 +22,7 @@ class SendTaskDueNotification implements ShouldQueue
     public function handle()
     {
         $tasks = Task::whereDate('due_date', '<=', now()->addDays(2))
-            ->where('status', 'pending')
+            ->where('status', 'Todo')
             ->get();
 
         foreach ($tasks as $task) {

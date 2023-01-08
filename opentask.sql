@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jan 07, 2023 at 08:43 PM
+-- Generation Time: Jan 08, 2023 at 01:05 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -30,9 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `files` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `task_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -54,16 +52,10 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(16, '2014_10_12_100000_create_password_resets_table', 1),
-(17, '2019_08_19_000000_create_failed_jobs_table', 1),
-(19, '2022_11_25_041642_create_tasks_table', 1),
-(20, '2022_11_25_045745_create_files_table', 1),
-(21, '2022_11_25_050013_create_notifications_table', 1),
-(61, '2014_10_12_000000_create_users_table', 2),
-(62, '2019_12_14_000001_create_personal_access_tokens_table', 2),
-(63, '2023_01_07_051944_create_files_table', 2),
-(66, '2023_01_07_052536_create_tasks_table', 3),
-(67, '2023_01_07_065345_create_notifications_table', 3);
+(1, '2014_10_12_000000_create_users_table', 1),
+(2, '2019_12_14_000001_create_personal_access_tokens_table', 1),
+(3, '2023_01_07_051944_create_files_table', 1),
+(4, '2023_01_08_105517_create_tasks_table', 1);
 
 -- --------------------------------------------------------
 
@@ -75,8 +67,8 @@ CREATE TABLE `tasks` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `file_id` bigint(20) UNSIGNED DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `file_id` bigint(20) UNSIGNED DEFAULT NULL,
   `due_date` date DEFAULT NULL,
   `status` enum('Todo','Done') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -105,7 +97,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Rasyid', 'rasyidriyaldi6@opentask.com', NULL, '$2y$10$pPEIdbAL0bL0Zj8wyCYAROcnwotDP8i4AKnguiqzjeTuNRuOtokAG', NULL, '2023-01-07 10:27:19', '2023-01-07 10:27:19');
+(1, 'Tester', 'test@admin.com', NULL, '$2y$10$nt8.BcuNRGzMvdC0S/z9IOPaqHPuCt191N35E46JzdTkHYbp7ZsoG', NULL, '2023-01-08 04:44:08', '2023-01-08 04:44:08');
 
 --
 -- Indexes for dumped tables
@@ -152,13 +144,13 @@ ALTER TABLE `files`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
