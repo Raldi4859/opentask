@@ -14,7 +14,7 @@
     </div>
 
     <div class="card card-body bg-light p-4">
-        <form action="{{ route('addTask') }}" method="post">
+        <form action="{{ route('addTask') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>

@@ -32,7 +32,10 @@
             </div>
             <div class="mb-3">
                 <label for="file">Upload File:</label>
-                <input type="file" class="form-control-file" id="file" name="file">{{ $task->file }}
+                <input type="file" class="form-control-file" id="file" name="file">
+                @if ($task->file)
+                    <a href="{{ asset('app/files' . $task->file) }}" target="_blank">{{ $task->file }}</a>
+                @endif
             <div class="mb-3">
             <div class="mb-3">
                 <label for="description" class="form-label">Status</label>

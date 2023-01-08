@@ -68,9 +68,8 @@ class TaskController extends Controller
     // Store file if input is present
     if ($request->hasFile('file')) {
         $file = $request->file('file');
-        $file->storeAs('file', $file->getClientOriginalName());
+        $file->storeAs('files', $file->getClientOriginalName());
         $task->files()->create([
-            'name' => $file->getClientOriginalName(),
             'path' => $file->getClientOriginalName(),
         ]);
     }

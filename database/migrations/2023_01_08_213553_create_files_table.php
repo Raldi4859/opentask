@@ -10,10 +10,11 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('path');
+            $table->unsignedBigInteger('task_id')->nullable();
             $table->timestamps();
 
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('set null');
         });
     }
 

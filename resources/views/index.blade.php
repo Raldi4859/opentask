@@ -34,7 +34,10 @@
                             <br>
                             Due Date: {{ $task->due_date }}
                             <br>
-                            File: {{ $task->file }}
+                            File: 
+                            @if ($task->file)
+                                <a href="{{ asset('app/files' . $task->file) }}" target="_blank">{{ $task->file }}</a>
+                            @endif
                         @else
                             <del>{{ $task->description }}</del>
                         @endif

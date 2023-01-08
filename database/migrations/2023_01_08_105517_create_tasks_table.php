@@ -13,13 +13,11 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('file_id')->nullable();
             $table->date('due_date')->nullable();
             $table->enum('status', ['Todo', 'Done']);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
             
         });
     }
