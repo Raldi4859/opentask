@@ -62,7 +62,7 @@ class User extends Authenticatable
     return $this->notifications()->whereNull('read_at');
     }
 
-    public function notify(Notification $notification)
+    public function notify($notification)
     {
         $this->notify($notification);
     }

@@ -49,13 +49,13 @@ class TaskController extends Controller
     public function store(Request $request)
     {
     // Validate input
-    //$request->validate([
-        //'name' => 'required',
-        //'description' => 'nullable',
-        //'due_date' => 'required|date',
-        //'status' => 'required|in:Todo,Done',
-        //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
-    //]);
+    $request->validate([
+        'name' => 'required',
+        'description' => 'nullable',
+        'due_date' => 'required|date',
+        'status' => 'required|in:Todo,Done',
+        'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
+    ]);
 
     $task = new Task();
     $task->name = $request->input('name');
@@ -191,23 +191,11 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function download($id)
-    {
-        $task = Task::findOrFail($id);
-        if ($task->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
-        $file = $task->file;
-        if (!$file) {
-            abort(404);
-        }
-        return Storage::download("tasks/{$file->file_name}");
-    }
-
-    public function sendNotification()
-    {
-        $tasks = Task::dueSoon()->get();
-        Notification::send($tasks->user, new TaskDue());
-    }
+    
+    //public function sendNotification()
+    //{
+        //$tasks = Task::dueSoon()->get();
+        //Notification::send($tasks->user, new TaskDue());
+    //}
 }
 

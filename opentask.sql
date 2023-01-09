@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jan 08, 2023 at 11:14 PM
+-- Generation Time: Jan 09, 2023 at 08:47 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -34,6 +34,22 @@ CREATE TABLE `files` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `files`
+--
+
+INSERT INTO `files` (`id`, `path`, `task_id`, `created_at`, `updated_at`) VALUES
+(5, 'Laporan Tugas Tipe 1 Kelompok 10 .pdf', NULL, '2023-01-08 23:07:40', '2023-01-08 23:07:40'),
+(6, 'Laporan Tugas Tipe 1 Kelompok 10 .pdf', NULL, '2023-01-08 23:13:29', '2023-01-08 23:13:29'),
+(7, 'PBO_TUBES_1301200457_1301204168_1301200131_1301200254_1301200457.pdf', NULL, '2023-01-08 23:16:17', '2023-01-08 23:16:17'),
+(8, 'Laporan Tugas Tipe 1 Kelompok 10 .pdf', NULL, '2023-01-08 23:18:54', '2023-01-08 23:18:54'),
+(9, 'FT20230109063409.pdf', NULL, '2023-01-08 23:34:09', '2023-01-08 23:34:09'),
+(10, 'FT20230109064159.pdf', NULL, '2023-01-08 23:41:59', '2023-01-08 23:41:59'),
+(11, 'pdf', NULL, '2023-01-08 23:45:16', '2023-01-08 23:45:16'),
+(12, 'Laporan Tugas Tipe 1 Kelompok 10 .pdf', NULL, '2023-01-08 23:45:52', '2023-01-08 23:45:52'),
+(13, 'TestUpload.pdf', 16, '2023-01-08 23:51:53', '2023-01-08 23:51:53'),
+(14, 'testUpload3.pdf', NULL, '2023-01-09 00:29:14', '2023-01-09 00:29:14');
 
 -- --------------------------------------------------------
 
@@ -79,25 +95,6 @@ CREATE TABLE `notifications` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `personal_access_tokens`
---
-
-CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_used_at` timestamp NULL DEFAULT NULL,
-  `expires_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tasks`
 --
 
@@ -107,10 +104,18 @@ CREATE TABLE `tasks` (
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `due_date` date DEFAULT NULL,
+  `filename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` enum('Todo','Done') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`id`, `name`, `description`, `user_id`, `due_date`, `filename`, `status`, `created_at`, `updated_at`) VALUES
+(16, 'Test3', 'Test3', 1, '2023-01-10', 'TestUpload.pdf', 'Todo', '2023-01-08 23:51:53', '2023-01-09 00:46:44');
 
 -- --------------------------------------------------------
 
@@ -128,6 +133,13 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Tester', 'test@test.com', NULL, '$2y$10$1pbfy5W/dsO3WCxCyIPK9.ARBGSO/tZpjKEZ.mxta7hthnsBXzOFK', NULL, '2023-01-08 23:03:20', '2023-01-08 23:03:20');
 
 --
 -- Indexes for dumped tables
@@ -155,14 +167,6 @@ ALTER TABLE `notifications`
   ADD KEY `notifications_task_id_foreign` (`task_id`);
 
 --
--- Indexes for table `personal_access_tokens`
---
-ALTER TABLE `personal_access_tokens`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
-  ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
-
---
 -- Indexes for table `tasks`
 --
 ALTER TABLE `tasks`
@@ -184,7 +188,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -199,16 +203,10 @@ ALTER TABLE `notifications`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `personal_access_tokens`
---
-ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `users`

@@ -3,22 +3,24 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class TaskDue extends Notification
 {
     use Queueable;
+
+    protected $task;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($task)
     {
-        //
+        $this->task = $task;
     }
 
     /**
@@ -41,8 +43,24 @@ class TaskDue extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('You have a task with a due date less than two days.')
-                    ->action('View Task', url('task.edit'))
-                    ->line('Thank you for using our application!');
+                    ->subject('Task Due Date Reminder')
+                    ->line('You have a task that is due in less than two days:')
+                    ->line($this->task->name)
+                    ->line('Due date: '.$this->task->due_date)
+                    ->from('notifications@example.com', 'Task Manager');
+    }
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toArray($notifiable)
+    {
+        return [
+            //
+        ];
     }
 }
+
+

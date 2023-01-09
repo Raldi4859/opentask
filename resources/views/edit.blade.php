@@ -33,7 +33,7 @@
             <div class="mb-3">
                 <label for="file">Upload File:</label>
                 <input type="file" class="form-control-file" id="file" name="file">
-                Current File:
+                File:
                 <a href="http://127.0.0.1:8000/files/{{ $task->filename }}"> {{ $task->filename }}</a>
             <div class="mb-3">
             <div class="mb-3">
