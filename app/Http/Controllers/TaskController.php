@@ -68,10 +68,13 @@ class TaskController extends Controller
     // Store file if input is present
     if ($request->hasFile('file')) {
         $file = $request->file('file');
-        $file->storeAs('files', $file->getClientOriginalName());
+        $filename = $request->file('file')->getClientOriginalName();
+        $file->move('files/', $filename);
         $task->files()->create([
-            'path' => $file->getClientOriginalName(),
+            'path' => $filename,
         ]);
+        $task->filename = $filename;
+        $task->save();
     }
 
     // Send notification if due date is less than two days away
@@ -150,9 +153,8 @@ class TaskController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $file->storeAs('files', $file->getClientOriginalName());
+            $file->move('files/', $file->getClientOriginalName());
             $task->file()->create([
-                'name' => $file->getClientOriginalName(),
                 'path' => $file->getClientOriginalName(),
             ]);
         }

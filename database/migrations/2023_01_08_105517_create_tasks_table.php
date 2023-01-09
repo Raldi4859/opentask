@@ -14,6 +14,7 @@ class CreateTasksTable extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->date('due_date')->nullable();
+            $table->string('filename')->nullable();
             $table->enum('status', ['Todo', 'Done']);
             $table->timestamps();
 
@@ -27,3 +28,5 @@ class CreateTasksTable extends Migration
         Schema::dropIfExists('tasks');
     }
 };
+
+

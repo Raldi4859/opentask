@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 
 class Task extends Model
 {
@@ -77,5 +78,12 @@ class Task extends Model
     public function notifications()
     {
     return $this->hasMany('App\Notification');
+    }
+
+    public function fileUrl()
+    {
+    if ($this->file) {
+        return Storage::url($this->file->path);
+        }
     }
 }
