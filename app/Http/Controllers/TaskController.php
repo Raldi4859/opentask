@@ -152,12 +152,19 @@ class TaskController extends Controller
         $task->save();
 
         if ($request->hasFile('file')) {
+            if ($task->file) {
+                unlink(public_path('files/') . $task->file->path);
+                $task->file()->delete();
+            }
             $file = $request->file('file');
-            $file->move('files/', $file->getClientOriginalName());
-            $task->file()->create([
-                'path' => $file->getClientOriginalName(),
+            $filename = $request->file('file')->getClientOriginalName();
+            $file->move('files/', $filename);
+            $task->files()->create([
+                'path' => $filename,
             ]);
-        }
+            $task->filename = $filename;
+            $task->save();
+            }
 
         return redirect()->route('index');
     }
