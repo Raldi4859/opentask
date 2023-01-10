@@ -32,3 +32,4 @@ php artisan serve
 ````sh
 http://localhost:8000
 ````
+8. Register Account using active account because notification send directly via email
