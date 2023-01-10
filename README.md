@@ -1,4 +1,4 @@
-# OpenTask (In Progress)
+# OpenTask 
 
 # Installation 
 
