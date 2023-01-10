@@ -22,6 +22,16 @@ class TaskController extends Controller
     {
         $tasks = Task::where('user_id', auth()->id())->get();
         return view('index', ['tasks' => $tasks]);
+
+        foreach ($tasks as $task) {
+            $due_date = $task->due_date;
+            $now = now();
+            // check if the task due date less than 2 days
+            if($due_date->diffInDays($now) < 2){
+                // notify the task owner about the task
+                $task->user->notify(new TaskDue($task));
+            }
+        }
     }
 
     /**
@@ -56,7 +66,7 @@ class TaskController extends Controller
         //'status' => 'required|in:Todo,Done',
         //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
     //]);
-    
+
 
     $task = new Task();
     $task->name = $request->input('name');
