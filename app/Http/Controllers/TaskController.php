@@ -56,6 +56,7 @@ class TaskController extends Controller
         //'status' => 'required|in:Todo,Done',
         //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
     //]);
+    
 
     $task = new Task();
     $task->name = $request->input('name');
@@ -78,10 +79,10 @@ class TaskController extends Controller
     }
 
     // Send notification if due date is less than two days away
-    //$user = auth()->user();
-    //if ($task->due_date <= Carbon::now()->addDays(2)) {
-        //$user->notify(new TaskDue($task));
-    //}
+    $user = auth()->user();
+    if ($task->due_date <= Carbon::now()->addDays(2)) {
+        Notification::send($user, new TaskDue($task));
+    }
 
     return redirect()->route('index');
     }
@@ -198,12 +199,6 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
-    //public function sendNotification()
-    //{
-        //$tasks = Task::dueSoon()->get();
-        //Notification::send($tasks->user, new TaskDue());
-    //}
 
     public function done($id)
     {

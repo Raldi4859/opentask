@@ -60,6 +60,7 @@
             </button>
         </form>
     </div>
+    
     <script>
     let input = document.getElementById('file');
     let button = document.getElementById('select-file-button');

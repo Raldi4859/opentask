@@ -10,7 +10,6 @@ use Illuminate\Notifications\Messages\MailMessage;
 class TaskDue extends Notification
 {
     use Queueable;
-
     protected $task;
 
     /**
@@ -43,12 +42,12 @@ class TaskDue extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Task Due Date Reminder')
-                    ->line('You have a task that is due in less than two days:')
-                    ->line($this->task->name)
-                    ->line('Due date: '.$this->task->due_date)
-                    ->from('notifications@example.com', 'Task Manager');
+                    ->subject("Reminder: Task " . $this->task->name ." due soon")
+                    ->line("A task '" . $this->task->name . "' with due date '" . $this->task->due_date . "' is approaching.")
+                    ->action('View Task', url('/task/'.$this->task->id .'/edit'))
+                    ->line('Thank you for using our application!');
     }
+
     /**
      * Get the array representation of the notification.
      *
@@ -62,5 +61,3 @@ class TaskDue extends Notification
         ];
     }
 }
-
-
