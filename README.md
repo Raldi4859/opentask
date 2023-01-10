@@ -43,4 +43,4 @@ php artisan serve
 ````sh
 http://localhost:8000
 ````
-8. Register Account using active account because notification send directly via email
+8. Register Account using a different active account from account that used in .env because the notification send directly via email
