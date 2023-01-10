@@ -49,13 +49,13 @@ class TaskController extends Controller
     public function store(Request $request)
     {
     // Validate input
-    $request->validate([
-        'name' => 'required',
-        'description' => 'nullable',
-        'due_date' => 'required|date',
-        'status' => 'required|in:Todo,Done',
-        'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
-    ]);
+    //$request->validate([
+        //'name' => 'required',
+        //'description' => 'nullable',
+        //'due_date' => 'required|date',
+        //'status' => 'required|in:Todo,Done',
+        //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
+    //]);
 
     $task = new Task();
     $task->name = $request->input('name');
@@ -119,6 +119,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         if ($task->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
+
         }
         return view('edit', compact('statuses', 'task'));
     }
@@ -137,13 +138,33 @@ class TaskController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'due_date' => 'required|date',
-            'status' => 'required|in:Todo,Done',
-            'file' => 'nullable|file|mimes:pdf,doc,docx'
-        ]);
+        //$request->validate([
+            //'name' => 'required',
+            //'description' => 'required',
+            //'due_date' => 'required|date',
+            //'status' => 'required|in:Todo,Done',
+            //'file' => 'nullable|file|mimes:pdf,doc,docx'
+        //]);
+
+        if($request->hasFile('file')){
+            // Delete the old file
+            Storage::delete($task->filename);
+
+            // Get the new file
+            $file = $request->file('file');
+            // Get file name with extension
+            $filenameWithExt = $file->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get extension
+            $extension = $file->getClientOriginalExtension();
+            // File name to store
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;
+            //Upload File
+            $path = $file->storeAs('public/files', $fileNameToStore);
+            // update the filename
+            $task->filename = $fileNameToStore;
+        }
 
         $task->name = $request->input('name');
         $task->description = $request->input('description');
@@ -151,20 +172,6 @@ class TaskController extends Controller
         $task->status = $request->input('status');
         $task->save();
 
-        if ($request->hasFile('file')) {
-            if ($task->file) {
-                unlink(public_path('files/') . $task->file->path);
-                $task->file()->delete();
-            }
-            $file = $request->file('file');
-            $filename = $request->file('file')->getClientOriginalName();
-            $file->move('files/', $filename);
-            $task->files()->create([
-                'path' => $filename,
-            ]);
-            $task->filename = $filename;
-            $task->save();
-            }
 
         return redirect()->route('index');
     }

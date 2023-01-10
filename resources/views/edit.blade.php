@@ -14,7 +14,7 @@
     </div>
 
     <div class="card card-body bg-light p-4">
-        <form action="{{ route('task.update', $task->id) }}" method="post">
+        <form action="{{ route('task.update', $task->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -31,11 +31,14 @@
                 <input type="date" class="form-control" id="due_date" name="due_date" value="{{ $task->due_date }}">
             </div>
             <div class="mb-3">
-                <label for="file">Upload File:</label>
-                <input type="file" class="form-control-file" id="file" name="file">
                 File:
                 <a href="http://127.0.0.1:8000/files/{{ $task->filename }}"> {{ $task->filename }}</a>
+            </div>
             <div class="mb-3">
+                <label for="file">File:</label>
+                <input type="file" class="form-control-file" id="file" name="file">
+                <input type="hidden" name="current_file" value="{{ $task->filename }}">
+            </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Status</label>
                 <select name="status" id="status" class="form-control">
@@ -45,13 +48,26 @@
                 </select>
             </div>
 
-            <a href="{{ route('index') }}" class="btn btn-secondary mr-2"><i class="fa fa-arrow-left"></i> Cancel</a>
+            <button type="button" class="btn btn-secondary" id="select-file-button">
+                <i class="fa fa-upload"></i>
+                Select File
+            </button>
 
+            <a href="{{ route('index') }}" class="btn btn-secondary mr-2"><i class="fa fa-arrow-left"></i> Cancel</a>
             <button type="submit" class="btn btn-success">
                 <i class="fa fa-check"></i>
                 Save
             </button>
         </form>
     </div>
+    <script>
+    let input = document.getElementById('file');
+    let button = document.getElementById('select-file-button');
 
+    button.addEventListener('click', function() {
+        input.click();
+    });
+    </script>
 @endsection
+
+           
