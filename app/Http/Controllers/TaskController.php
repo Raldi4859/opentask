@@ -197,5 +197,17 @@ class TaskController extends Controller
         //$tasks = Task::dueSoon()->get();
         //Notification::send($tasks->user, new TaskDue());
     //}
+
+    public function done($id)
+    {
+        $task = Task::findOrFail($id);
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        $task->status = 'Done';
+        $task->save();
+
+        return redirect()->route('index');
+    }
 }
 

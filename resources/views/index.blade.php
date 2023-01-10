@@ -59,7 +59,14 @@
                         <a href="{{ route('task.edit', $task->id) }}" class="btn btn-success">
                            <i class="fa fa-edit"></i>
                         </a>
+                        <form action="{{ route('task.done', $task->id) }}" style="display: inline" method="POST" onsubmit="return confirm('Are you sure to mark as done ?')">
+                            @csrf
+                            @method('PATCH')
 
+                            <button type="submit" class="btn btn-success">
+                                 <i class="fa fa-check"></i> Done
+                            </button>
+                        </form>
                         <form action="{{ route('task.destroy', $task->id) }}" style="display: inline" method="POST" onsubmit="return confirm('Are you sure to delete ?')">
                             @csrf
                             @method('DELETE')

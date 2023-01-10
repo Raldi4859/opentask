@@ -30,6 +30,9 @@ Route::get('actionlogout', [LoginController::class, 'actionlogout'])->name('acti
 Route::get('home', [TaskController::class, 'index'])->name('index');
 Route::resource('task', TaskController::class);
 Route::post('addTask',[TaskController::class, 'store'])->name('addTask');
-Route::get('tasks/{id}/download', 'TaskController@download')->name('tasks.download');
+Route::patch('task/{id}/done', [TaskController::class, 'done'])->name('task.done');
+Route::get('/notifications', function () {
+    return auth()->user()->unreadNotifications;
+});
 
 
