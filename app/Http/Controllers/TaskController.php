@@ -59,13 +59,13 @@ class TaskController extends Controller
     public function store(Request $request)
     {
     // Validate input
-    //$request->validate([
-        //'name' => 'required',
-        //'description' => 'nullable',
-        //'due_date' => 'required|date',
-        //'status' => 'required|in:Todo,Done',
-        //'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
-    //]);
+    $request->validate([
+        'name' => 'required',
+        'description' => 'nullable',
+        'due_date' => 'required|date',
+        'status' => 'required|in:Todo,Done',
+        'file' => 'nullable|file|mimes:pdf,doc,docx|max:1024'
+    ]);
 
 
     $task = new Task();
@@ -149,13 +149,13 @@ class TaskController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        //$request->validate([
-            //'name' => 'required',
-            //'description' => 'required',
-            //'due_date' => 'required|date',
-            //'status' => 'required|in:Todo,Done',
-            //'file' => 'nullable|file|mimes:pdf,doc,docx'
-        //]);
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'due_date' => 'required|date',
+            'status' => 'required|in:Todo,Done',
+            'file' => 'nullable|file|mimes:pdf,doc,docx'
+        ]);
 
         if($request->hasFile('file')){
             // Delete the old file
