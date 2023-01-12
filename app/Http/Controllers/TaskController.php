@@ -172,7 +172,7 @@ class TaskController extends Controller
             // File name to store
             $fileNameToStore = $filename.'_'.time().'.'.$extension;
             // Upload File
-            $path = $file->storeAs('public/files', $fileNameToStore);
+            $path = $file->move('/files', $fileNameToStore);
             // update the filename
             $task->filename = $fileNameToStore;
         }
